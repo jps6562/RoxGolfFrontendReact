@@ -7,17 +7,17 @@ const H3 = ({ children }: { children: React.ReactNode }) => (
   <h3 className="text-[0.95rem] font-bold text-rox-green uppercase tracking-wider mb-3">{children}</h3>
 )
 
-const Th = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+const Th = ({ children, className }: { children?: React.ReactNode; className?: string }) => (
   <th className={`text-left px-2 py-2 text-rox-text3 text-[0.66rem] uppercase tracking-wider font-semibold border-b border-rox-border whitespace-nowrap ${className ?? ''}`}>
     {children}
   </th>
 )
-const Td = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+const Td = ({ children, className }: { children?: React.ReactNode; className?: string }) => (
   <td className={`px-2 py-2 text-[0.85rem] text-rox-text2 border-b border-[#F0F5F1] whitespace-nowrap ${className ?? ''}`}>
     {children}
   </td>
 )
-const StickyTd = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+const StickyTd = ({ children, className }: { children?: React.ReactNode; className?: string }) => (
   <td className={`sticky left-0 bg-rox-card z-10 border-r border-rox-border px-2 py-2 text-[0.85rem] font-semibold text-rox-text1 whitespace-nowrap ${className ?? ''}`}>
     {children}
   </td>
