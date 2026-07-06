@@ -1,5 +1,11 @@
+import { useQuery } from '@tanstack/react-query'
+import { PortableText, type PortableTextComponents } from '@portabletext/react'
+import type { PortableTextBlock } from '@portabletext/types'
 import Card from '@/components/layout/Card'
 import SectionLabel from '@/components/layout/SectionLabel'
+import { client } from '@/sanity/client'
+
+// ── Shared styled primitives ──────────────────────────────────────────────────
 
 const H3 = ({ children }: { children: React.ReactNode }) => (
   <h3 className="text-[0.95rem] font-bold text-rox-green uppercase tracking-wider mb-3">{children}</h3>
@@ -16,15 +22,84 @@ const RL = ({ children }: { children: React.ReactNode }) => (
   <ul className="flex flex-col gap-1.5 mt-1.5 list-none p-0">{children}</ul>
 )
 
-export default function RgARulesPage() {
+// ── Portable text component map (maps Sanity blocks → styled components) ─────
+
+const ptComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => <P>{children}</P>,
+    h4: ({ children }) => (
+      <p className="font-semibold text-rox-text1 text-[0.9rem] mt-3 mb-1.5">{children}</p>
+    ),
+    blockquote: ({ children }) => (
+      <p className="mt-2.5 text-[0.82rem] text-rox-text3 italic">{children}</p>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => <RL>{children}</RL>,
+  },
+  listItem: {
+    bullet: ({ children }) => <RLI>{children}</RLI>,
+  },
+}
+
+// ── Sanity data fetching ──────────────────────────────────────────────────────
+
+interface Rule {
+  _id: string
+  ruleNumber: string
+  title: string
+  sectionGroup: string
+  order: number
+  body: PortableTextBlock[]
+}
+
+const SECTION_ORDER = ['Rules 1–5', 'Rules 6–10', 'Rules 11–15', 'Speedy Play', 'Etiquette', 'Skins']
+
+function useRules() {
+  return useQuery({
+    queryKey: ['rules'],
+    queryFn: () => client.fetch<Rule[]>(`*[_type == "rule"] | order(order asc)`),
+  })
+}
+
+// ── Dynamic page (renders Sanity content) ────────────────────────────────────
+
+function RulesDynamic({ rules }: { rules: Rule[] }) {
+  const grouped = SECTION_ORDER.reduce<Record<string, Rule[]>>((acc, section) => {
+    acc[section] = rules.filter(r => r.sectionGroup === section)
+    return acc
+  }, {})
+
   return (
     <>
-      <Card>
-        <H3>RgA Rules — Recreational Golfers of America</H3>
-        <P>RgA Rules are a unified set of relaxed rules better suited to speeding up play, eliminating unfortunate lies, and making the game a little bit easier and <strong>MUCH MORE FUN</strong>, while keeping things fair for gamblers.</P>
-        <P>The USGA Rules can be difficult to understand and apply — strict and procedural, leading to slow play. RgA Rules simplify penalty situations so players can keep moving.</P>
-      </Card>
+      {SECTION_ORDER.map(section => {
+        const sectionRules = grouped[section]
+        if (!sectionRules?.length) return null
+        return (
+          <div key={section} className="contents">
+            <SectionLabel>{section}</SectionLabel>
+            {sectionRules.map(rule => (
+              <Card key={rule._id}>
+                <H3>
+                  {rule.ruleNumber && !isNaN(Number(rule.ruleNumber))
+                    ? `Rule ${rule.ruleNumber} — ${rule.title}`
+                    : rule.title}
+                </H3>
+                <PortableText value={rule.body} components={ptComponents} />
+              </Card>
+            ))}
+          </div>
+        )
+      })}
+    </>
+  )
+}
 
+// ── Static fallback (used until Sanity rules are entered) ────────────────────
+
+function RulesStatic() {
+  return (
+    <>
       <SectionLabel>Rules 1 – 5</SectionLabel>
 
       <Card>
@@ -217,6 +292,25 @@ export default function RgARulesPage() {
         </RL>
         <P className="mt-2.5"><strong>Foursome/fivesome:</strong> If 2 tie for 1st, they split. If 3 tie for 1st, the game is null.<br /><strong>Threesome:</strong> If 2 tie for 1st, the game is null.</P>
       </Card>
+    </>
+  )
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
+
+export default function RgARulesPage() {
+  const { data: rules } = useRules()
+  const hasRules = rules && rules.length > 0
+
+  return (
+    <>
+      <Card>
+        <H3>RgA Rules — Recreational Golfers of America</H3>
+        <P>RgA Rules are a unified set of relaxed rules better suited to speeding up play, eliminating unfortunate lies, and making the game a little bit easier and <strong>MUCH MORE FUN</strong>, while keeping things fair for gamblers.</P>
+        <P>The USGA Rules can be difficult to understand and apply — strict and procedural, leading to slow play. RgA Rules simplify penalty situations so players can keep moving.</P>
+      </Card>
+
+      {hasRules ? <RulesDynamic rules={rules} /> : <RulesStatic />}
 
       <Card>
         <p className="text-[0.8rem] text-rox-text3 leading-relaxed">
