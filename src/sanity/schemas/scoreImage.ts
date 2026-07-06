@@ -22,7 +22,14 @@ export default defineType({
       name: 'section',
       title: 'Section',
       type: 'string',
-      options: { list: ['League', 'Trip', 'Bowling'] },
+      options: {
+        list: [
+          'Tuesday League — Flight Standings',
+          'Tuesday League — Score Sheet',
+          'MASTERS Trip — Standings',
+          'Bowling — Current Standings',
+        ],
+      },
     }),
     defineField({ name: 'publishedAt', title: 'Date', type: 'datetime' }),
   ],

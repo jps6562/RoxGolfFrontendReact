@@ -1,7 +1,37 @@
+import { useQuery } from '@tanstack/react-query'
 import Card from '@/components/layout/Card'
 import SectionLabel from '@/components/layout/SectionLabel'
 import FlightBadge from '@/components/layout/FlightBadge'
 import { useCommissioner } from '@/context/CommissionerContext'
+import { client, urlFor } from '@/sanity/client'
+
+interface ScoreImage {
+  _id: string
+  label?: string
+  image: { asset: { _ref: string } }
+  caption?: string
+  publishedAt?: string
+}
+
+function useLeagueStandingsImage() {
+  return useQuery({
+    queryKey: ['scoreImage', 'Tuesday League — Flight Standings'],
+    queryFn: () =>
+      client.fetch<ScoreImage | null>(
+        `*[_type == "scoreImage" && section == "Tuesday League — Flight Standings"] | order(publishedAt desc)[0]`
+      ),
+  })
+}
+
+function useLeagueScoreSheetImage() {
+  return useQuery({
+    queryKey: ['scoreImage', 'Tuesday League — Score Sheet'],
+    queryFn: () =>
+      client.fetch<ScoreImage | null>(
+        `*[_type == "scoreImage" && section == "Tuesday League — Score Sheet"] | order(publishedAt desc)[0]`
+      ),
+  })
+}
 
 const H3 = ({ children }: { children: React.ReactNode }) => (
   <h3 className="text-[0.95rem] font-bold text-rox-green uppercase tracking-wider mb-3">{children}</h3>
@@ -31,9 +61,35 @@ const fN = 'bg-[rgba(138,53,53,0.04)]'
 
 export default function LeagueStatsPage() {
   const { isCommissioner } = useCommissioner()
+  const { data: standingsImage } = useLeagueStandingsImage()
+  const { data: scoresImage } = useLeagueScoreSheetImage()
 
   return (
     <>
+      {[standingsImage, scoresImage].map((img) =>
+        img?.image ? (
+          <Card key={img._id} className="p-0 overflow-hidden">
+            {img.label && (
+              <div className="px-4 pt-3 pb-2">
+                <p className="text-[0.75rem] font-semibold uppercase tracking-wider text-rox-text3">
+                  {img.label}
+                </p>
+              </div>
+            )}
+            <img
+              src={urlFor(img.image).width(900).url()}
+              alt={img.label ?? 'Score sheet'}
+              className="w-full h-auto block"
+            />
+            {img.caption && (
+              <p className="px-4 py-2 text-[0.75rem] text-rox-text3 italic">
+                {img.caption}
+              </p>
+            )}
+          </Card>
+        ) : null
+      )}
+
       {isCommissioner && (
         <Card className="border-rox-gold bg-rox-gold-light">
           <p className="text-[0.85rem] text-rox-text2 font-medium">
