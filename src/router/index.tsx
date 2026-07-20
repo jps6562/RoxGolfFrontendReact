@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import AppShell from '@/components/layout/AppShell'
+import SanityStudioPage from '@/pages/studio/SanityStudioPage'
 
 import HomePage from '@/pages/home/HomePage'
 
@@ -37,6 +38,10 @@ import PhotoGalleryPage from '@/pages/photos/PhotoGalleryPage'
 import AlbertGamePage from '@/pages/poker/AlbertGamePage'
 
 export const router = createBrowserRouter([
+  {
+    path: '/studio/*',
+    element: <SanityStudioPage />,
+  },
   {
     path: '/',
     element: <AppShell />,

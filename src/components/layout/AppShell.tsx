@@ -2,6 +2,7 @@ import { Outlet, useMatches, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import CommissionerToggle from '@/components/commissioner/CommissionerToggle'
 import CommissionerBanner from '@/components/commissioner/CommissionerBanner'
+import logo from '@/assets/logo.jpeg'
 
 interface RouteHandle {
   title?: string
@@ -32,6 +33,7 @@ export default function AppShell() {
             <ArrowLeft size={20} />
           </button>
         )}
+        <img src={logo} alt="RoxGolf" className="h-10 w-10 rounded-full object-cover flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-xl font-extrabold tracking-tight text-white leading-none">
             Rox<span className="text-rox-gold-bright">Golf</span>.com
