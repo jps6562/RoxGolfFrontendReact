@@ -66,6 +66,13 @@ const structure = (S: any) =>
                 .child(S.documentTypeList('rule').title('RgA Rules')),
             ])
         ),
+
+      S.divider(),
+
+      S.listItem()
+        .title('All Score Images')
+        .schemaType('scoreImage')
+        .child(S.documentTypeList('scoreImage').title('All Score Images')),
     ])
 
 export default defineConfig({

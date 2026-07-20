@@ -77,7 +77,7 @@ export default function LeagueStatsPage() {
               </div>
             )}
             <img
-              src={urlFor(img.image).width(900).url()}
+              src={urlFor(img.image).url()}
               alt={img.label ?? 'Score sheet'}
               className="w-full h-auto block"
             />

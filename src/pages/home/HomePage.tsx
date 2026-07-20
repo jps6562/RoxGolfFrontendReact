@@ -4,6 +4,7 @@ import NavGrid from '@/components/layout/NavGrid'
 import Card from '@/components/layout/Card'
 import SectionLabel from '@/components/layout/SectionLabel'
 import { client } from '@/sanity/client'
+import logo from '@/assets/logo.jpeg'
 
 interface Announcement {
   _id: string
@@ -35,9 +36,7 @@ export default function HomePage() {
   return (
     <>
       <Card className="flex items-center gap-4">
-        <div className="w-14 h-14 bg-rox-green rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
-          ⛳
-        </div>
+        <img src={logo} alt="RoxGolf" className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
         <div>
           <div className="text-[1.9rem] font-extrabold tracking-tight text-rox-text1 leading-none">
             Rox<span className="text-rox-gold">Golf</span>.com
