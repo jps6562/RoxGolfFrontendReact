@@ -33,7 +33,7 @@ export default function LeagueInfoPage() {
       <Card>
         <H3>2026 Tuesday Golf League</H3>
         <RL>
-          <RLI><strong>Course</strong> — The Club at Shadow Lakes, Aliquippa</RLI>
+          <RLI><strong>Course</strong> — The Club  at Shadow Lakes, Aliquippa</RLI>
           <RLI><strong>Season</strong> — April through September, Tuesday evenings</RLI>
           <RLI><strong>Tee Times</strong> — 5:00, 5:08, 5:16, 5:24, 5:32pm</RLI>
           <RLI><strong>Format</strong> — Round Robin Matchplay in 3 flights, culminating in Single Elimination Playoff Tournaments</RLI>
